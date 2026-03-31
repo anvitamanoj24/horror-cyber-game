@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLightContext } from '@/lib/lightContext'
 
 interface IntroScreenProps {
   onStart: () => void
@@ -20,6 +21,10 @@ const LINES = [
 export default function IntroScreen({ onStart }: IntroScreenProps) {
   const [visibleLines, setVisibleLines] = useState<number>(0)
   const [showButton, setShowButton] = useState(false)
+  const { setEpisodeId } = useLightContext()
+
+  // Reset light and set a unique page id so bulb moves
+  useEffect(() => { setEpisodeId(99) }, [setEpisodeId])
 
   useEffect(() => {
     let i = 0

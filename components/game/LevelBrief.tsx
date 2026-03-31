@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { LEVELS } from '@/data/episodes'
+import { useLightContext } from '@/lib/lightContext'
 
 interface LevelBriefProps {
   levelId: number
@@ -45,6 +46,10 @@ export default function LevelBrief({ levelId, onEnter, onBack }: LevelBriefProps
   const lore = LEVEL_LORE[levelId]
   const [visibleLines, setVisibleLines] = useState(0)
   const [ready, setReady] = useState(false)
+  const { setEpisodeId } = useLightContext()
+
+  // Reset light on mount
+  useEffect(() => { setEpisodeId(97) }, [setEpisodeId])
 
   // Reveal lore lines one by one
   useState(() => {

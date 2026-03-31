@@ -29,7 +29,7 @@ const level1Episodes: Episode[] = [
   {
     id: 1, level: 1, episodeInLevel: 1,
     flavor: "A rusted fuse box hums in the corner. Something is trapped inside.",
-    question: "The ghost is stuck in saturation. The transistor's collector is flooded. What single word describes the region where Vce is near zero and the transistor is fully ON?",
+    question: "The transistor's collector is flooded. What single word describes the region where Vce is near zero and the transistor is fully ON?",
     answer: "saturation",
     hint: "It's not cutoff. It's not active. The door is jammed shut.",
     timerSeconds: 20, puzzleType: 'lateral'

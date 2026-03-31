@@ -28,7 +28,7 @@ export function LightProvider({ children }: { children: ReactNode }) {
 
   const setEpisodeId = useCallback((id: number) => {
     setEpisodeIdState(id)
-    setLightOn(false)
+    setLightOn(false) // always dark on new episode/page
   }, [])
 
   const turnOnLight = useCallback(() => setLightOn(true), [])
@@ -46,6 +46,7 @@ export function LightProvider({ children }: { children: ReactNode }) {
 
 export const useLightContext = () => useContext(LightContext)
 
+// 20 unique positions spread across all screen edges/corners
 const POSITIONS = [
   { x: 92, y: 8  },
   { x: 8,  y: 8  },

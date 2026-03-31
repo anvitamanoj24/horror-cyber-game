@@ -160,7 +160,7 @@ export default function EpisodeCard({ episode, onCorrect, onFail }: EpisodeCardP
       animate={shake ? { x: [-10, 10, -8, 8, -4, 4, 0] } : { x: 0 }}
       transition={{ duration: 0.4 }}
       className="w-full max-w-2xl"
-      style={{ position: 'relative', zIndex: 50 }}
+      style={{ position: 'relative', zIndex: 20 }}
     >
       <div
         className="door-frame relative overflow-hidden"
@@ -243,24 +243,24 @@ export default function EpisodeCard({ episode, onCorrect, onFail }: EpisodeCardP
 
         <div className="mx-5 my-2 border-t" style={{ borderColor: level.color + '22' }} />
 
-        {/* QUESTION — blurred until light on */}
+        {/* QUESTION — blurred until bulb is clicked (lightOn) */}
         <div className="px-5 pb-4" style={{ position: 'relative' }}>
           <p style={{
             fontFamily: 'JetBrains Mono', color: '#c8d8e8', fontSize: '0.85rem', lineHeight: 1.7,
-            filter: phase === 'dark' ? 'blur(7px)' : 'none',
+            filter: !lightOn ? 'blur(7px)' : 'none',
             transition: 'filter 0.5s ease',
-            userSelect: phase === 'dark' ? 'none' : 'auto',
+            userSelect: !lightOn ? 'none' : 'auto',
           }}>
             {episode.question}
           </p>
-          {phase === 'dark' && (
+          {!lightOn && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
               <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.65rem', color: 'rgba(245,200,66,0.5)', letterSpacing: '0.15em', textAlign: 'center' }}>
                 🔦 find the light switch to reveal the question
               </span>
             </div>
           )}
-          {phase === 'reading' && (
+          {phase === 'reading' && lightOn && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
               <span style={{ fontFamily: 'JetBrains Mono', fontSize: '0.65rem', color: 'rgba(245,200,66,0.5)', letterSpacing: '0.15em' }}>
                 reading time... {graceLeft}s

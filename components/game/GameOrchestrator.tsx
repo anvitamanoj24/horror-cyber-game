@@ -94,7 +94,7 @@ export default function GameOrchestrator() {
       {/* Left sidebar */}
       <div
         className="w-52 flex-shrink-0 flex flex-col p-4 border-r relative"
-        style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.8)', zIndex: 45 }}
+        style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.8)', zIndex: 20 }}
       >
         <div className="text-center mb-4">
           <div className="float inline-block text-2xl" style={{ filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.5))' }}>
@@ -119,7 +119,7 @@ export default function GameOrchestrator() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col relative" style={{ zIndex: 45 }}>
+      <div className="flex-1 flex flex-col relative" style={{ zIndex: 20 }}>
         {/* Top bar */}
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.6)' }}>
           <div style={{ fontFamily: "'Special Elite', serif", color: '#8b6a4a', fontSize: '0.75rem', letterSpacing: '0.15em' }}>

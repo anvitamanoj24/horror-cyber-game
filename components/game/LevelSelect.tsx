@@ -1,6 +1,8 @@
 'use client'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { LEVELS } from '@/data/episodes'
+import { useLightContext } from '@/lib/lightContext'
 
 interface LevelSelectProps {
   fragments: string[]
@@ -9,10 +11,13 @@ interface LevelSelectProps {
 }
 
 const DOOR_EMOJIS = ['🚪', '📚', '🔬', '🏚️']
-const LOCK_POSITIONS = ['top-right', 'top-left', 'bottom-left', 'bottom-right']
 
 export default function LevelSelect({ fragments, completedEpisodes, onSelect }: LevelSelectProps) {
-  // A level is available if it's level 1, or the previous level's fragment is collected
+  const { setEpisodeId } = useLightContext()
+
+  // Reset light on mount, unique page id
+  useEffect(() => { setEpisodeId(98) }, [setEpisodeId])
+
   const isAvailable = (levelId: number) => {
     if (levelId === 1) return true
     return fragments.includes(LEVELS[levelId - 2].fragment)
