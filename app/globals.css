@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Special+Elite&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-void: #020205;
+  --color-blood: #8b0000;
+  --color-ember: #ff6b00;
+  --color-lantern: #f5c842;
+  --color-ghost: #c8d8e8;
+  --color-mold: #2a4a2a;
+  --font-hack: 'JetBrains Mono', 'Courier New', monospace;
+  --font-worn: 'Special Elite', serif;
+}
+
+* {
+  cursor: none !important;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+input, textarea, select, button, a, [role="button"] {
+  cursor: none !important;
+}
+
+html, body {
+  background: #020205;
+  color: #c8d8e8;
+  font-family: 'JetBrains Mono', monospace;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* CRT scanlines overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.15) 2px,
+    rgba(0,0,0,0.15) 4px
+  );
+}
+
+/* CRT vignette */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+}
+
+/* Glitch animation */
+@keyframes glitch {
+  0%, 90%, 100% { transform: translate(0); filter: none; }
+  91% { transform: translate(-3px, 1px); filter: hue-rotate(90deg); }
+  92% { transform: translate(3px, -1px); filter: hue-rotate(-90deg); }
+  93% { transform: translate(0); filter: none; }
+  95% { transform: translate(-2px, 2px); filter: brightness(1.5); }
+  96% { transform: translate(2px, -2px); filter: none; }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  88% { opacity: 1; }
+  89% { opacity: 0.3; }
+  90% { opacity: 1; }
+  94% { opacity: 0.7; }
+  95% { opacity: 1; }
+}
+
+@keyframes lanternPulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+@keyframes bloodDrip {
+  0% { transform: scaleY(0); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0.6; }
+}
+
+@keyframes typeIn {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes doorCreak {
+  0% { transform: perspective(800px) rotateY(0deg); }
+  100% { transform: perspective(800px) rotateY(-85deg); }
+}
+
+@keyframes wireGrow {
+  from { stroke-dashoffset: 200; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes morse-flash {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 1; }
+}
+
+.glitch { animation: glitch 6s infinite; }
+.flicker { animation: flicker 5s infinite; }
+.float { animation: float 3s ease-in-out infinite; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #020205; }
+::-webkit-scrollbar-thumb { background: #8b000066; }
+
+::selection { background: #8b000044; color: #f5c842; }
+
+/* Door styles */
+.door-frame {
+  border: 2px solid #3a2a1a;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.9);
+  position: relative;
+}
+
+.door-frame::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid #2a1a0a;
+  pointer-events: none;
+}
+
+/* Blood wire */
+.blood-wire {
+  stroke: #8b0000;
+  stroke-width: 2;
+  fill: none;
+  filter: drop-shadow(0 0 4px #ff0000);
+  stroke-dasharray: 200;
+  animation: wireGrow 1s ease-out forwards;
+}
+
+/* Worn paper texture */
+.worn-paper {
+  background: linear-gradient(135deg, #1a1208 0%, #0f0c06 50%, #1a1208 100%);
+  border: 1px solid #3a2a1a;
+}
+
+/* Input styles */
+.ghost-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #8b000066;
+  color: #f5c842;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  caret-color: #f5c842;
+}
+
+.ghost-input::placeholder { color: #3a2a1a; }
+
+/* Button */
+.haunted-btn {
+  background: transparent;
+  border: 1px solid #8b000066;
+  color: #c8d8e8;
+  font-family: 'JetBrains Mono', monospace;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.haunted-btn:hover {
+  border-color: #8b0000;
+  color: #f5c842;
+  box-shadow: 0 0 20px rgba(139,0,0,0.3), inset 0 0 20px rgba(139,0,0,0.1);
+}
+
+.haunted-btn:disabled { opacity: 0.3; }
