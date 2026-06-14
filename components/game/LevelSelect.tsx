@@ -11,8 +11,8 @@ interface LevelSelectProps {
   onSelect: (levelId: number) => void
 }
 
-const DOOR_NAMES = ['CHIPSYNC', 'CIRCUIT SHADOWS', 'SILICON GHOSTS', 'NEURAL HAUNT']
-const DOOR_EMOJIS = ['🚪', '📚', '🔬', '🏚️']
+const DOOR_NAMES = ['CHIPSYNC', 'LOCKED', 'LOCKED', 'LOCKED']
+const DOOR_EMOJIS = ['🚪', '🔒', '🔒', '🔒']
 
 export default function LevelSelect({ fragments, completedEpisodes, onSelect }: LevelSelectProps) {
   const { setEpisodeId } = useLightContext()

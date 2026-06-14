@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'HORROR-CYBER MATRIX',
-  description: 'A gamified horror-cyber quiz. 40 episodes. One chance.',
+  title: 'HIDE-AND-SEEK',
+  description: 'A gamified horror-theme quiz.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

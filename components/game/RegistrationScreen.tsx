@@ -77,7 +77,7 @@ export default function RegistrationScreen({ onComplete }: RegistrationScreenPro
           </div>
           <div style={{ fontFamily: 'JetBrains Mono', color: '#8b0000', fontSize: '0.7rem',
             letterSpacing: '0.3em', marginTop: '0.5rem' }}>
-            ◆ KTU ELECTRONICS TREASURE HUNT ◆
+            ◆ HIDE AND SEEK ◆
           </div>
         </div>
 
@@ -87,7 +87,7 @@ export default function RegistrationScreen({ onComplete }: RegistrationScreenPro
 
           <div className="text-center" style={{ fontFamily: "'Special Elite', serif",
             color: '#8b6a4a', fontSize: '0.9rem', fontStyle: 'italic' }}>
-            Enter your details to begin the hunt
+            BEGIN THE JOURNEY <em>~seek the light beyond the darkness</em>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
