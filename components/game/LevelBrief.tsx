@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { LEVELS } from '@/data/episodes'
 import { useLightContext } from '@/lib/lightContext'
+import { AudioEngine } from '@/lib/audioEngine'
 
 interface LevelBriefProps {
   levelId: number
@@ -12,32 +13,32 @@ interface LevelBriefProps {
 
 const LEVEL_LORE: Record<number, string[]> = {
   1: [
-    "You descend the creaking stairs into the basement.",
-    "The air smells of burnt solder and old copper.",
-    "Rusted fuse boxes line the walls. Something hums.",
-    "10 analog puzzles await. Transistors. MOSFETs. Biasing.",
-    "The ghost of every failed circuit haunts this room.",
+    "You enter the CHIPSYNC basement. Silicon wafers line the walls.",
+    "The air smells of photoresist and clean-room chemicals.",
+    "A chip layout glows on the screen. Something is unrouted.",
+    "10 VLSI physical design puzzles await. Placement. Routing. Timing.",
+    "Prove you understand the flow from netlist to tape-out.",
   ],
   2: [
-    "The study door groans as you push it open.",
-    "Bookshelves tower to the ceiling, titles in binary.",
-    "A typewriter taps by itself in the corner.",
-    "10 digital puzzles. Logic gates. Verilog. RTL design.",
-    "Every truth table is a map of the ghost's mind.",
+    "The study door is sealed. The admin has not opened it yet.",
+    "Return when Week 2 begins.",
+    "The ghost of digital logic waits patiently inside.",
+    "Logic gates. RTL. Verilog. It will be ready.",
+    "Check back soon.",
   ],
   3: [
-    "The lab is cold. Sterile. Wrong.",
-    "Silicon wafers line the shelves like pale dinner plates.",
-    "A UV lamp flickers in Morse code.",
-    "10 fabrication puzzles. VLSI. Lithography. Layout.",
-    "The ghost was born here, etched into silicon.",
+    "The lab is locked. Cold. Silent.",
+    "Silicon fabrication secrets are stored within.",
+    "The admin holds the key to this room.",
+    "Lithography. CMOS. Process nodes.",
+    "It opens when the time comes.",
   ],
   4: [
-    "The attic. The highest room. The final room.",
-    "Cobwebs form neural networks in every corner.",
-    "A quantum blueprint covers the entire floor.",
-    "10 future-tech puzzles. Edge AI. Neuromorphic. IoT.",
-    "The ghost has evolved. So must you.",
+    "The attic is the highest room. The final challenge.",
+    "Neuromorphic computing. Edge AI. The future of chips.",
+    "No one has reached this room yet.",
+    "The ghost of innovation waits at the top.",
+    "Unlock Week 4 to enter.",
   ],
 }
 
@@ -168,7 +169,7 @@ export default function LevelBrief({ levelId, onEnter, onBack }: LevelBriefProps
               ← BACK
             </button>
             <button
-              onClick={onEnter}
+              onClick={() => { AudioEngine.playDoorCreak(); setTimeout(onEnter, 1400) }}
               className="haunted-btn flex-1 py-3 text-sm tracking-widest"
               style={{ borderColor: level.color + '88', color: level.color, fontFamily: "'Special Elite', serif", fontSize: '1rem' }}
             >

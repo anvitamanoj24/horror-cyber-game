@@ -2,8 +2,8 @@
 import { useEffect } from 'react'
 import { useGameStore } from '@/store/gameStore'
 import { LEVELS } from '@/data/episodes'
-import { Permadeath } from '@/lib/permadeath'
 import { AudioEngine } from '@/lib/audioEngine'
+import { getCurrentPlayer, setCurrentPlayer } from '@/lib/playerStore'
 import EpisodeCard from '@/components/game/EpisodeCard'
 import MasterRiddle from '@/components/game/MasterRiddle'
 import LevelMap from '@/components/game/LevelMap'
@@ -13,6 +13,8 @@ import SystemMelt from '@/components/game/SystemMelt'
 import LockedScreen from '@/components/game/LockedScreen'
 import InnovationPortal from '@/components/portal/InnovationPortal'
 import IntroScreen from '@/components/game/IntroScreen'
+import RegistrationScreen from '@/components/game/RegistrationScreen'
+import HamburgerMenu from '@/components/game/HamburgerMenu'
 
 export default function GameOrchestrator() {
   const {
@@ -23,6 +25,7 @@ export default function GameOrchestrator() {
     fragments,
     lockedAt,
     masterRiddleActive,
+    register,
     startGame,
     selectLevel,
     enterLevel,
@@ -32,41 +35,46 @@ export default function GameOrchestrator() {
     collectFragment,
   } = useGameStore()
 
+  // Check if already registered on mount
   useEffect(() => {
-    // TESTING MODE — skip permadeath check
-    // if (Permadeath.isLocked()) {
-    //   useGameStore.setState({ phase: 'locked', lockedAt: Permadeath.getLockedAt() })
-    // }
-  }, [])
+    const player = getCurrentPlayer()
+    if (player && phase === 'register') {
+      register(player.phone)
+    }
+  }, []) // eslint-disable-line
 
   useEffect(() => {
     if (phase === 'playing') AudioEngine.startAmbience()
-    if (phase === 'locked' || phase === 'melt') AudioEngine.stopAmbience()
-    if (phase === 'levelSelect' || phase === 'levelBrief') AudioEngine.stopAmbience()
+    if (phase === 'levelSelect') AudioEngine.startAmbience()
+    if (phase === 'locked' || phase === 'melt' || phase === 'register') AudioEngine.stopAmbience()
   }, [phase])
 
-  useEffect(() => {
-    if (phase === 'locked') Permadeath.lock()
-  }, [phase])
+  const handleRegister = () => {
+    const player = getCurrentPlayer()
+    if (player) register(player.phone)
+  }
 
-  // Full-screen phases
-  if (phase === 'locked') return <LockedScreen lockedAt={lockedAt} />
-  if (phase === 'melt') return <SystemMelt />
-  if (phase === 'portal') return <InnovationPortal />
-  if (phase === 'intro') return <IntroScreen onStart={startGame} />
+  // Full-screen phases — no hamburger on register
+  if (phase === 'register') return <RegistrationScreen onComplete={handleRegister} />
+  if (phase === 'locked') return <><HamburgerMenu /><LockedScreen lockedAt={lockedAt} /></>
+  if (phase === 'melt') return <><HamburgerMenu /><SystemMelt /></>
+  if (phase === 'portal') return <><HamburgerMenu /><InnovationPortal /></>
+  if (phase === 'intro') return <><HamburgerMenu /><IntroScreen onStart={startGame} /></>
   if (phase === 'levelSelect') return (
-    <LevelSelect
-      fragments={fragments}
-      completedEpisodes={completedEpisodes}
-      onSelect={selectLevel}
-    />
+    <>
+      <HamburgerMenu />
+      <LevelSelect fragments={fragments} completedEpisodes={completedEpisodes} onSelect={selectLevel} />
+    </>
   )
   if (phase === 'levelBrief') return (
-    <LevelBrief
-      levelId={currentLevel}
-      onEnter={enterLevel}
-      onBack={() => useGameStore.setState({ phase: 'levelSelect' })}
-    />
+    <>
+      <HamburgerMenu />
+      <LevelBrief
+        levelId={currentLevel}
+        onEnter={enterLevel}
+        onBack={() => useGameStore.setState({ phase: 'levelSelect' })}
+      />
+    </>
   )
 
   // Playing phase
@@ -80,6 +88,8 @@ export default function GameOrchestrator() {
 
   return (
     <div className="min-h-screen flex relative" style={{ background: '#020205' }}>
+      <HamburgerMenu />
+
       {/* Hallway perspective */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.06 }} preserveAspectRatio="none">
         <line x1="50%" y1="0" x2="5%"  y2="100%" stroke="#3a2a1a" strokeWidth="1"/>
@@ -92,27 +102,19 @@ export default function GameOrchestrator() {
       </svg>
 
       {/* Left sidebar */}
-      <div
-        className="w-52 flex-shrink-0 flex flex-col p-4 border-r relative"
-        style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.8)', zIndex: 20 }}
-      >
+      <div className="w-52 flex-shrink-0 flex flex-col p-4 border-r relative"
+        style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.8)', zIndex: 20 }}>
         <div className="text-center mb-4">
-          <div className="float inline-block text-2xl" style={{ filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.5))' }}>
-            🏮
-          </div>
+          <div className="float inline-block text-2xl" style={{ filter: 'drop-shadow(0 0 8px rgba(245,200,66,0.5))' }}>🏮</div>
         </div>
-
         <LevelMap currentLevel={currentLevel} currentEpisode={currentEpisode} fragments={fragments} />
-
         {fragments.length > 0 && (
           <div className="mt-auto pt-4 border-t" style={{ borderColor: '#1a1208' }}>
             <div style={{ fontFamily: 'JetBrains Mono', color: '#3a2a1a', fontSize: '0.55rem', marginBottom: '0.5rem', letterSpacing: '0.15em' }}>
               COLLECTED FRAGMENTS
             </div>
             {fragments.map((f, i) => (
-              <div key={i} style={{ fontFamily: 'JetBrains Mono', color: '#8b4a4a', fontSize: '0.6rem', marginBottom: '0.25rem' }}>
-                ◈ {f}
-              </div>
+              <div key={i} style={{ fontFamily: 'JetBrains Mono', color: '#8b4a4a', fontSize: '0.6rem', marginBottom: '0.25rem' }}>◈ {f}</div>
             ))}
           </div>
         )}
@@ -123,7 +125,7 @@ export default function GameOrchestrator() {
         {/* Top bar */}
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.6)' }}>
           <div style={{ fontFamily: "'Special Elite', serif", color: '#8b6a4a', fontSize: '0.75rem', letterSpacing: '0.15em' }}>
-            THE HAUNTED CURRICULUM
+            CHIPSYNC
           </div>
           <div style={{ fontFamily: 'JetBrains Mono', color: '#3a2a1a', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
             {completedEpisodes}/40 ROOMS CLEARED
@@ -145,7 +147,7 @@ export default function GameOrchestrator() {
         {/* Bottom bar */}
         <div className="px-8 py-2 border-t flex items-center" style={{ borderColor: '#1a1208', background: 'rgba(10,8,6,0.6)' }}>
           <div style={{ fontFamily: 'JetBrains Mono', color: '#3a2a1a', fontSize: '0.6rem' }}>
-            KTU ELECTRONICS DESIGN CHALLENGE
+            KTU ELECTRONICS · CHIPSYNC TREASURE HUNT
           </div>
           <div className="ml-auto" style={{ fontFamily: 'JetBrains Mono', color: '#8b000044', fontSize: '0.6rem' }}>
             PERMADEATH ACTIVE · TAB SWITCH = INSTANT FAIL

@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { updatePlayerScore, scoreForLevel } from '@/lib/playerStore'
 
-export type GamePhase = 'intro' | 'levelSelect' | 'levelBrief' | 'playing' | 'melt' | 'locked' | 'portal'
+export type GamePhase = 'register' | 'intro' | 'levelSelect' | 'levelBrief' | 'playing' | 'melt' | 'locked' | 'portal'
 
 interface GameState {
   phase: GamePhase
@@ -12,7 +13,9 @@ interface GameState {
   lockedAt: number | null
   masterRiddleActive: boolean
   portalIdea: string
+  playerPhone: string | null
 
+  register: (phone: string) => void
   startGame: () => void
   selectLevel: (level: number) => void
   enterLevel: () => void
@@ -27,7 +30,7 @@ interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
-      phase: 'intro',
+      phase: 'register',
       currentLevel: 1,
       currentEpisode: 1,
       completedEpisodes: 0,
@@ -35,10 +38,13 @@ export const useGameStore = create<GameState>()(
       lockedAt: null,
       masterRiddleActive: false,
       portalIdea: '',
+      playerPhone: null,
+
+      register: (phone: string) => {
+        set({ playerPhone: phone, phase: 'intro' })
+      },
 
       startGame: () => {
-        const { lockedAt } = get()
-        if (lockedAt) return
         set({ phase: 'levelSelect' })
       },
 
@@ -61,17 +67,20 @@ export const useGameStore = create<GameState>()(
       },
 
       solveMasterRiddle: () => {
-        const { currentLevel } = get()
+        const { currentLevel, playerPhone } = get()
+        // Award points for completing the level
+        if (playerPhone) {
+          updatePlayerScore(playerPhone, currentLevel, scoreForLevel(currentLevel))
+        }
         if (currentLevel === 4) {
           set({ phase: 'portal', masterRiddleActive: false })
         } else {
-          // Go back to level select for next level
           set({ masterRiddleActive: false, phase: 'levelSelect' })
         }
       },
 
       triggerMelt: () => {
-        // TESTING MODE — skip permadeath, just go back to level select
+        // Testing mode — go back to level select
         set({ phase: 'levelSelect' })
       },
 
@@ -83,7 +92,7 @@ export const useGameStore = create<GameState>()(
       setPortalIdea: (idea: string) => set({ portalIdea: idea }),
 
       resetGame: () => set({
-        phase: 'intro',
+        phase: 'register',
         currentLevel: 1,
         currentEpisode: 1,
         completedEpisodes: 0,
@@ -91,8 +100,9 @@ export const useGameStore = create<GameState>()(
         lockedAt: null,
         masterRiddleActive: false,
         portalIdea: '',
+        playerPhone: null,
       }),
     }),
-    { name: 'horror-cyber-game-state' }
+    { name: 'chipsync-game-state' }
   )
 )

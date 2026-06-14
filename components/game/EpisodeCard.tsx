@@ -117,7 +117,8 @@ export default function EpisodeCard({ episode, onCorrect, onFail }: EpisodeCardP
     if (nextLives <= 0) {
       setPhase('dead')
       phaseRef.current = 'dead'
-      setTimeout(onFail, 1400)
+      // Play 3-attempts sound, then call onFail when sound ends
+      AudioEngine.play3Attempts(() => onFail())
     } else {
       // Stay on same question, restart timer — light stays ON
       setTimerKey(k => k + 1)
